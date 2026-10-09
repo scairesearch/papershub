@@ -18,7 +18,8 @@ defmodule ScaiWeb.Router do
     pipe_through :browser
 
     live_session :app, on_mount: ScaiWeb.Nav do
-      live "/", SearchLive
+      live "/", WorkspaceLive
+      live "/search", SearchLive
       live "/papers/:id", PaperLive
       live "/graph/:id", GraphLive
       live "/concepts", ConceptsLive

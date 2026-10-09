@@ -99,3 +99,7 @@ aside { background: var(--card); border: 1px solid var(--line); padding: 1rem; }
   .problem { display: none; }
   nav { margin: 0.6rem 0; }
 }
+.workspace { display: grid; grid-template-columns: 220px 1fr 280px; gap: 16px; min-height: 70vh; }
+.rail, .inspector { background: var(--card); border: 1px solid var(--line); padding: 12px; }
+.canvas { min-width: 0; }
+@media (max-width: 900px) { .workspace { grid-template-columns: 1fr; } }
