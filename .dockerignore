@@ -1,0 +1,6 @@
+_build
+deps
+tmp
+erl_crash.dump
+*.ez
+scairesearch-*.tar

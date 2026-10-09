@@ -1,0 +1,29 @@
+# Build from the repo root: gcloud builds submit --config cloudbuild.yaml
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args: ["build", "-t", "${_REGION}-docker.pkg.dev/$PROJECT_ID/scai/scairesearch:$SHORT_SHA", "."]
+  - name: gcr.io/cloud-builders/docker
+    args: ["push", "${_REGION}-docker.pkg.dev/$PROJECT_ID/scai/scairesearch:$SHORT_SHA"]
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - scairesearch
+      - --image
+      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/scai/scairesearch:$SHORT_SHA
+      - --region
+      - ${_REGION}
+      - --allow-unauthenticated
+      - --port
+      - "8080"
+      - --memory
+      - 1Gi
+      - --set-env-vars
+      - PHX_SERVER=true
+      - --update-secrets
+      - SECRET_KEY_BASE=scai-secret-key-base:latest
+substitutions:
+  _REGION: asia-south1
+images:
+  - ${_REGION}-docker.pkg.dev/$PROJECT_ID/scai/scairesearch:$SHORT_SHA

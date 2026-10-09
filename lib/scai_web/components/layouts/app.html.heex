@@ -1,0 +1,14 @@
+<header class="top">
+  <a class="mark" href={~p"/"}>SCAI Research</a>
+  <nav>
+    <a href={~p"/"} class={active(@active, :search)}>Search</a>
+    <a href={~p"/graph/prithvi"} class={active(@active, :graph)}>Graph</a>
+    <a href={~p"/concepts"} class={active(@active, :concepts)}>Concepts</a>
+    <a href={~p"/read/prithvi"} class={active(@active, :read)}>Read</a>
+    <a href={~p"/gaps"} class={active(@active, :gaps)}>Gaps</a>
+  </nav>
+  <span class="problem">Federated geo-local index</span>
+</header>
+<main>
+  {@inner_content}
+</main>
