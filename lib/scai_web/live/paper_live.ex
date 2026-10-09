@@ -25,6 +25,7 @@ defmodule ScaiWeb.PaperLive do
         <a href={~p"/graph/#{@paper.id}"}>Neighborhood graph</a>
         <a href={~p"/read/#{@paper.id}"}>Reading room</a>
         <a :if={@paper.url} href={@paper.url} target="_blank" rel="noreferrer">Source</a>
+        <a :if={@paper.arxiv} href={"https://arxivisual.org/abs/#{@paper.arxiv}"} target="_blank" rel="noreferrer">Visualize externally</a>
       </p>
       <h2>Abstract</h2>
       <p class="prose">{@paper.abstract}</p>

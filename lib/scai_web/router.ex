@@ -25,6 +25,7 @@ defmodule ScaiWeb.Router do
       live "/read/:id", ReadLive
       live "/gaps", GapsLive
       live "/briefs/:id", BriefLive
+      live "/index", IndexLive
     end
   end
 
@@ -34,5 +35,6 @@ defmodule ScaiWeb.Router do
     get "/health", HealthController, :index
     get "/api/search", ApiController, :search
     get "/api/papers/:id", ApiController, :paper
+    get "/briefs/:id/export", ApiController, :export_brief
   end
 end

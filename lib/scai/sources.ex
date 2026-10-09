@@ -6,6 +6,7 @@ defmodule Scai.Sources do
   """
 
   @sources [
+    {"index", Scai.Sources.LocalIndex},
     {"seed", Scai.Sources.Seed},
     {"semantic_scholar", Scai.Sources.SemanticScholar},
     {"openalex", Scai.Sources.OpenAlex},

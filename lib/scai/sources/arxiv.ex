@@ -9,6 +9,19 @@ defmodule Scai.Sources.Arxiv do
     end
   end
 
+  def harvest(category, start, max_results) do
+    case Req.get(@url,
+           params: [search_query: "cat:" <> category, start: start, max_results: max_results, sortBy: "submittedDate", sortOrder: "descending"],
+           receive_timeout: 20_000,
+           retry: false,
+           headers: [{"user-agent", "ScaiResearch/0.1 (mailto:niranjan@deceptiveai.in)"}]
+         ) do
+      {:ok, %{status: 200, body: body}} when is_binary(body) -> {:ok, parse_feed(body)}
+      {:ok, %{status: status}} -> {:error, {:http, status}}
+      {:error, reason} -> {:error, reason}
+    end
+  end
+
   def fetch(id) do
     case search("id:" <> id) do
       {:ok, [paper | _]} -> {:ok, paper}

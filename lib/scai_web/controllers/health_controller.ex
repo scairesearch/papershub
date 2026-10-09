@@ -25,6 +25,34 @@ defmodule ScaiWeb.ApiController do
     end
   end
 
+  def export_brief(conn, %{"id" => id}) do
+    gap = Scai.Corpus.gap(id) || Scai.Desk.custom_gap(id)
+    if gap do
+      brief = Scai.Brief.build(gap)
+      body = """
+      #{gap.question}
+
+      Problem: #{brief.problem.name}
+      Reason: #{gap.reason}
+
+      Evidence for
+      #{Enum.map_join(brief.for, "\n", &("- " <> &1.text))}
+
+      Evidence against
+      #{Enum.map_join(brief.against, "\n", &("- " <> &1.text))}
+
+      Next experiment
+      #{gap.next}
+      """
+      conn
+      |> put_resp_content_type("text/plain")
+      |> put_resp_header("content-disposition", "attachment; filename=\"#{id}.txt\"")
+      |> send_resp(200, body)
+    else
+      conn |> put_status(404) |> json(%{error: "not_found"})
+    end
+  end
+
   defp public(p) do
     Map.take(p, [:id, :source, :title, :authors, :year, :venue, :citations, :influential, :counts_note, :fields, :url, :tldr, :doi, :arxiv])
   end

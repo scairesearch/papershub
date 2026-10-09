@@ -57,7 +57,7 @@ defmodule ScaiWeb.BriefLive do
       </ul>
       <h2>Next experiment</h2>
       <p class="prose">{@brief.gap.next}</p>
-      <p class="actions"><a href={~p"/gaps"}>All gaps</a> <a href={~p"/concepts"}>Concept canvas</a></p>
+      <p class="actions"><a href={~p"/gaps"}>All gaps</a> <a href={~p"/concepts"}>Concept canvas</a> <a href={~p"/briefs/#{@brief.gap.id}/export"}>Export</a></p>
     </section>
     """
   end

@@ -12,6 +12,7 @@ defmodule Scai.Application do
       {DNSCluster, query: Application.get_env(:scai, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Scai.PubSub},
       Scai.Desk,
+      Scai.Index,
       ScaiWeb.Endpoint
     ]
 
