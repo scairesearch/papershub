@@ -9,7 +9,8 @@ defmodule ScaiWeb.SearchLive do
      |> assign(:page_title, "Search")
      |> assign(:q, q)
      |> assign(:loading, q != "")
-     |> assign(:result, empty(q))}
+     |> assign(:result, empty(q))
+     |> assign(:pins, Scai.Desk.pins())}
   end
 
   def handle_params(%{"q" => q}, _uri, socket) when q != "" do
@@ -21,6 +22,12 @@ defmodule ScaiWeb.SearchLive do
 
   def handle_event("search", %{"q" => q}, socket) do
     {:noreply, push_patch(socket, to: ~p"/?q=#{q}")}
+  end
+
+  def handle_event("pin", %{"id" => id}, socket) do
+    paper = Enum.find(socket.assigns.result.papers, &(&1.id == id))
+    if paper, do: Scai.Desk.pin(paper)
+    {:noreply, assign(socket, :pins, Scai.Desk.pins())}
   end
 
   def handle_info({:search, q}, socket) do
@@ -42,6 +49,7 @@ defmodule ScaiWeb.SearchLive do
         <input type="search" name="q" value={@q} placeholder="geospatial foundation model, fusion, population" />
         <button type="submit">Search</button>
       </form>
+      <p :if={@pins != []} class="muted">Pinned to the problem: {Enum.map_join(@pins, ", ", & &1.title)}</p>
       <p :if={@loading} class="muted">Asking the indexes…</p>
       <ul class="sources">
         <li :for={r <- @result.reports} class={r.status} title={r[:reason]}>
@@ -60,6 +68,7 @@ defmodule ScaiWeb.SearchLive do
           <p class="actions">
             <a href={~p"/graph/#{p.id}"}>Graph</a>
             <a href={~p"/read/#{p.id}"}>Read</a>
+            <button type="button" phx-click="pin" phx-value-id={p.id}>Pin</button>
           </p>
         </li>
       </ol>

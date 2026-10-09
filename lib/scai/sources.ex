@@ -39,6 +39,12 @@ defmodule Scai.Sources do
     end
   end
 
+  def enrich(id) do
+    paper = fetch(id)
+    needs_refs = paper && paper.source == "semantic_scholar" && paper.references == []
+    if needs_refs, do: resolve(id) || paper, else: paper
+  end
+
   defp fanout(q) do
     outcomes =
       @sources

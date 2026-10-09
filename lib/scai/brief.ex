@@ -11,8 +11,9 @@ defmodule Scai.Brief do
           {Enum.filter(claims, &(&1.paper_id in ["gfm", "scalemae"])),
            Enum.filter(claims, &(&1.paper_id == "prithvi" and &1.stance == "disputes"))}
         _ ->
-          {Enum.filter(claims, &(&1.paper_id in ["croma", "skysense"])),
-           Enum.filter(claims, &(&1.paper_id == "worldpop"))}
+          paper_id = gap[:paper_id]
+          {Enum.filter(claims, &(&1.paper_id == paper_id)),
+           Enum.filter(claims, &(&1.stance == "disputes"))}
       end
     %{gap: gap, problem: Scai.Corpus.problem(), for: for_claims, against: against, papers: papers}
   end

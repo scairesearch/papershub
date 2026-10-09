@@ -2,19 +2,34 @@ defmodule ScaiWeb.GraphLive do
   use ScaiWeb, :live_view
 
   def mount(%{"id" => id}, _session, socket) do
-    origin = Scai.Corpus.paper(id) || Scai.Sources.fetch(id) || Scai.Corpus.paper("prithvi")
-    graph = Scai.Graph.neighborhood(origin)
+    origin = Scai.Sources.enrich(id) || Scai.Corpus.paper("prithvi")
+    extra = Map.get(origin, :reference_stubs, [])
+    graph = Scai.Graph.neighborhood(origin, extra)
     {:ok,
      socket
      |> assign(:active, :graph)
      |> assign(:page_title, "Graph")
      |> assign(:origin, origin)
      |> assign(:graph, graph)
-     |> assign(:selected, origin.id)}
+     |> assign(:selected, origin.id)
+     |> assign(:pinned, Scai.Desk.pinned?(origin.id))
+     |> assign(:gap_saved, nil)}
   end
 
   def handle_event("select", %{"id" => id}, socket) do
     {:noreply, assign(socket, :selected, id)}
+  end
+
+  def handle_event("pin", %{"id" => id}, socket) do
+    paper = Enum.find(socket.assigns.graph.nodes, &(&1.id == id)) || socket.assigns.origin
+    Scai.Desk.pin(paper)
+    {:noreply, assign(socket, :pinned, true)}
+  end
+
+  def handle_event("gap", %{"id" => id}, socket) do
+    paper = Enum.find(socket.assigns.graph.nodes, &(&1.id == id)) || socket.assigns.origin
+    gap = Scai.Desk.add_gap(%{question: "What does #{paper.title} leave open on the geo-local index?", reason: "single-paper", paper_id: paper.id})
+    {:noreply, assign(socket, :gap_saved, gap.id)}
   end
 
   def render(assigns) do
@@ -44,7 +59,10 @@ defmodule ScaiWeb.GraphLive do
           <a href={~p"/papers/#{@focus.id}"}>Record</a>
           <a href={~p"/read/#{@focus.id}"}>Read</a>
           <a href={~p"/graph/#{@focus.id}"}>Make origin</a>
+          <button phx-click="pin" phx-value-id={@focus.id}>Pin to problem</button>
+          <button phx-click="gap" phx-value-id={@focus.id}>Promote gap</button>
         </p>
+        <p :if={@gap_saved} class="muted">Gap saved. <a href={~p"/briefs/#{@gap_saved}"}>Open brief</a></p>
         <h2>Prior works</h2>
         <ul>
           <li :for={p <- @graph.prior}><a href={~p"/graph/#{p.id}"}>{p.year} · {short(p.title)}</a></li>

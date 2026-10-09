@@ -5,8 +5,8 @@ defmodule Scai.Graph do
   Edges are similarity, not citation-only: shared concepts, shared references, or a citation link.
   """
 
-  def neighborhood(origin, limit \\ 11) do
-    pool = Scai.Corpus.papers()
+  def neighborhood(origin, extra \\ []) do
+    pool = Enum.uniq_by(Scai.Corpus.papers() ++ List.wrap(extra) ++ Scai.Desk.pins(), & &1.id)
     others = Enum.reject(pool, &(&1.id == origin.id))
 
     ranked =
@@ -14,8 +14,8 @@ defmodule Scai.Graph do
       |> Enum.map(fn paper -> {paper, score(origin, paper)} end)
       |> Enum.filter(fn {_p, s} -> s > 0 end)
       |> Enum.sort_by(&elem(&1, 1), :desc)
-      |> Enum.take(limit)
-      |> fallback(origin, others, limit)
+      |> Enum.take(11)
+      |> fallback(origin, others, 11)
 
     nodes = [origin | Enum.map(ranked, &elem(&1, 0))]
     edges = edges(origin, ranked)

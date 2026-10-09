@@ -52,6 +52,7 @@ defmodule Scai.Sources.SemanticScholar do
       abstract: row["abstract"] || "No abstract returned by Semantic Scholar.",
       concepts: [],
       references: refs(row["references"]),
+      reference_stubs: stubs(row["references"]),
       cited_by: refs(row["citations"]),
       claims: []
     }
@@ -59,6 +60,34 @@ defmodule Scai.Sources.SemanticScholar do
 
   defp refs(nil), do: []
   defp refs(rows), do: Enum.map(rows, &("s2:" <> to_string(&1["paperId"]))) |> Enum.reject(&(&1 == "s2:"))
+
+  defp stubs(nil), do: []
+  defp stubs(rows) do
+    Enum.map(rows, fn row ->
+      %{
+        id: "s2:" <> to_string(row["paperId"]),
+        source: "semantic_scholar",
+        title: row["title"] || "Untitled reference",
+        authors: [],
+        year: row["year"],
+        venue: nil,
+        citations: row["citationCount"] || 0,
+        influential: nil,
+        counts_note: "Semantic Scholar",
+        fields: [],
+        url: nil,
+        arxiv: nil,
+        doi: nil,
+        tldr: nil,
+        abstract: "Reference stub from the origin paper. Open the record to load the abstract.",
+        concepts: [],
+        references: [],
+        cited_by: [],
+        claims: []
+      }
+    end)
+    |> Enum.reject(&(&1.id == "s2:"))
+  end
 
   defp semantic_url(id), do: "https://www.semanticscholar.org/paper/#{id}"
   defp clip(nil), do: nil

@@ -2,7 +2,7 @@ defmodule ScaiWeb.GapsLive do
   use ScaiWeb, :live_view
 
   def mount(_params, _session, socket) do
-    {:ok, socket |> assign(:active, :gaps) |> assign(:page_title, "Gaps") |> assign(:gaps, Scai.Corpus.gaps())}
+    {:ok, socket |> assign(:active, :gaps) |> assign(:page_title, "Gaps") |> assign(:gaps, Scai.Corpus.gaps() ++ Scai.Desk.custom_gaps())}
   end
 
   def render(assigns) do
@@ -27,7 +27,7 @@ defmodule ScaiWeb.BriefLive do
   use ScaiWeb, :live_view
 
   def mount(%{"id" => id}, _session, socket) do
-    gap = Scai.Corpus.gap(id) || hd(Scai.Corpus.gaps())
+    gap = Scai.Corpus.gap(id) || Scai.Desk.custom_gap(id) || hd(Scai.Corpus.gaps())
     {:ok,
      socket
      |> assign(:active, :gaps)
