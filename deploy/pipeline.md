@@ -1,5 +1,7 @@
 # Elixir pipeline for papershub
 
+The platform goal and the enhanced object model are in `architecture.md`. This file is the mechanism.
+
 Two planes. GCP is the public edge. Bare metal is production.
 
 The 450 million works are one merged catalog, mostly OpenAlex, with Semantic Scholar, Crossref, and arXiv overlapping it. That catalog does not fit Cloud Run. A request-priced instance with an ephemeral disk cannot hold the snapshot, and it cannot finish a harvest after the request ends. Bare metal holds the index. Cloud Run serves the working set.
