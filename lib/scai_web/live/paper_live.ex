@@ -20,6 +20,7 @@ defmodule ScaiWeb.PaperLive do
         <strong>{@paper.citations || 0}</strong> citations
         <strong>{@paper.influential || "—"}</strong> influential
       </p>
+      <p class="meta">Method {method_name(@paper)} · place {place_name(@paper)}</p>
       <p class="lede">{@paper.tldr}</p>
       <p class="actions">
         <a href={~p"/graph/#{@paper.id}"}>Neighborhood graph</a>
@@ -52,4 +53,9 @@ defmodule ScaiWeb.PaperLive do
     </section>
     """
   end
+
+  defp method_name(%{method: %{name: name}}), do: name
+  defp method_name(_), do: "Unspecified"
+  defp place_name(%{place: %{footprint: footprint}}), do: footprint
+  defp place_name(_), do: "unknown"
 end

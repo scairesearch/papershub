@@ -34,7 +34,7 @@ defmodule Scai.Corpus do
         id: "india-coverage",
         problem_id: "geo-index",
         question: "Where is India actually evaluated, versus US and EU tiles?",
-        reason: "single-paper",
+        reason: "missing-place",
         next: "Re-score the seed models on a held-out India tile set before claiming transfer."
       },
       %{
@@ -150,6 +150,24 @@ defmodule Scai.Corpus do
 
   def by_concept(concept_id), do: Enum.filter(papers(), &(concept_id in &1.concepts))
 
+  defp place("prithvi"), do: %{footprint: "unknown", note: "HLS pretraining. India district holdout not reported."}
+  defp place("skysense"), do: %{footprint: "global", note: "Universal interpretation claim. India is not the reported test."}
+  defp place("clay"), do: %{footprint: "global", note: "Open model. Evaluation geography not named as India."}
+  defp place(_), do: %{footprint: "unknown", note: "Evaluation place not stated in the seed record."}
+
+  defp method("satmae"), do: %{id: "masked-autoencoder", name: "Masked autoencoder"}
+  defp method("seco"), do: %{id: "seasonal-contrast", name: "Seasonal contrast"}
+  defp method("scalemae"), do: %{id: "scale-mae", name: "Scale-aware masked autoencoder"}
+  defp method("prithvi"), do: %{id: "hls-mae", name: "HLS masked autoencoder"}
+  defp method("croma"), do: %{id: "radar-optical-mae", name: "Radar-optical contrastive MAE"}
+  defp method("satlas"), do: %{id: "supervised-pretrain", name: "Large-scale supervised pretrain"}
+  defp method("worldpop"), do: %{id: "dasymetric", name: "Dasymetric population mapping"}
+  defp method("gfm"), do: %{id: "continual-pretrain", name: "Continual geospatial pretraining"}
+  defp method("spectralgpt"), do: %{id: "spectral-gpt", name: "Spectral generative pretraining"}
+  defp method("skysense"), do: %{id: "multimodal-fm", name: "Multi-modal foundation model"}
+  defp method("clay"), do: %{id: "open-eo-fm", name: "Open Earth-observation foundation model"}
+  defp method(_), do: %{id: "unspecified", name: "Unspecified"}
+
   defp paper(id, title, authors, year, venue, citations, influential, fields, url, arxiv, tldr, abstract, concepts, references, cited_by, claims) do
     %{
       id: id,
@@ -170,7 +188,9 @@ defmodule Scai.Corpus do
       concepts: concepts,
       references: references,
       cited_by: cited_by,
-      claims: Enum.with_index(claims, 1) |> Enum.map(fn {c, i} -> Map.merge(c, %{id: "#{id}-c#{i}", paper_id: id}) end)
+      claims: Enum.with_index(claims, 1) |> Enum.map(fn {c, i} -> Map.merge(c, %{id: "#{id}-c#{i}", paper_id: id}) end),
+      place: place(id),
+      method: method(id)
     }
   end
 end

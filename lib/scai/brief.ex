@@ -15,7 +15,11 @@ defmodule Scai.Brief do
           {Enum.filter(claims, &(&1.paper_id == paper_id)),
            Enum.filter(claims, &(&1.stance == "disputes"))}
       end
-    %{gap: gap, problem: Scai.Corpus.problem(), for: for_claims, against: against, papers: papers}
+    %{gap: gap, problem: Scai.Corpus.problem(), for: for_claims, against: against, papers: papers, footprint: footprint(papers)}
+  end
+
+  def footprint(papers) do
+    Enum.map(papers, fn p -> {p.title, p.place[:footprint] || "unknown"} end)
   end
 
   def paper_title(id, papers), do: Enum.find_value(papers, id, &if(&1.id == id, do: &1.title))

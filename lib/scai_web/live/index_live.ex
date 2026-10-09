@@ -5,6 +5,11 @@ defmodule ScaiWeb.IndexLive do
     {:ok, socket |> assign(:active, :index) |> assign(:page_title, "Index") |> assign_stats()}
   end
 
+  def handle_event("shard", _params, socket) do
+    manifest = Scai.Pipeline.run("seed")
+    {:noreply, assign(socket, :manifest, manifest)}
+  end
+
   def handle_event("harvest", %{"category" => category}, socket) do
     Scai.Index.harvest(category)
     Process.send_after(self(), :refresh, 1500)
@@ -19,6 +24,7 @@ defmodule ScaiWeb.IndexLive do
     |> assign(:stats, stats)
     |> assign(:categories, Scai.Index.categories())
     |> assign(:status, nil)
+    |> assign(:manifest, Scai.Pipeline.manifest())
   end
 
   def render(assigns) do
@@ -32,6 +38,8 @@ defmodule ScaiWeb.IndexLive do
         arXivisual only when a single paper needs a visual.
       </p>
       <p class="counts"><strong>{@stats.count}</strong> papers in the local index</p>
+      <p :if={@manifest}>Hot shard {@manifest["count"]} papers · {@manifest["at"]}</p>
+      <button phx-click="shard">Build geospatial shard</button>
       <p :if={@status} class="muted">{@status}</p>
       <ul class="hits">
         <li :for={cat <- @categories}>
