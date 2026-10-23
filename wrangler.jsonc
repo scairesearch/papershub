@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json.schemastore.org/wrangler.json",
+  "name": "papershub",
+  "compatibility_date": "2026-10-19",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true
+  // Do not put secrets here. After `npx wrangler login`:
+  // npx wrangler secret put XAI_API_KEY
+}
+

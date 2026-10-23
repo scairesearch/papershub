@@ -1,0 +1,14 @@
+node_modules/
+.output/
+.vercel/
+.wrangler/
+.project_id
+.github_repo
+.node_modules.lock
+.env
+.env.*
+screenshots/
+artifacts/
+attachments/
+.grok/*
+!.grok/app-env.json
