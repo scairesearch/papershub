@@ -1,14 +1,18 @@
 <header class="top">
   <a class="mark" href={~p"/"}>SCAI Research</a>
+  <a href={~p"/papers"} class={["desk", desk?(@active)]}>papershub</a>
   <nav>
-    <a href={~p"/"} class={active(@active, :workspace)}>Workspace</a>
-    <a href={~p"/search"} class={active(@active, :search)}>Seed</a>
-    <a href={~p"/read/prithvi"} class={active(@active, :read)}>Read</a>
-    <a href={~p"/briefs/india-coverage"} class={active(@active, :gaps)}>Brief</a>
-    <a href={~p"/index"} class={active(@active, :index)}>Index</a>
+    <a href={~p"/research"} class={active(@active, :research)}>Research</a>
+    <a href={~p"/spatial"} class={active(@active, :spatial)}>Spatial</a>
+    <a href={~p"/systems"} class={active(@active, :systems)}>Systems</a>
+    <a href={~p"/studio"} class={active(@active, :studio)}>Studio</a>
+    <a href={~p"/contact"} class={active(@active, :contact)}>Contact</a>
   </nav>
-  <span class="problem">Federated geo-local index</span>
 </header>
 <main>
   {@inner_content}
 </main>
+<footer class="foot">
+  <p>SCAI Research Labs. Elixir LiveView is the stack. India.</p>
+  <p><a href="mailto:governance@creativehumans.in">governance@creativehumans.in</a></p>
+</footer>

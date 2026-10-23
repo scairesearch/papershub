@@ -1,0 +1,7 @@
+{
+  "name": "papershub-live",
+  "private": true,
+  "dependencies": {
+    "@cloudflare/containers": "^0.0.13"
+  }
+}

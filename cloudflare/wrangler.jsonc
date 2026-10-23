@@ -1,0 +1,22 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "papershub-live",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-23",
+  "account_id": "f8c1b580440d650c797f2736d60116f3",
+  "workers_dev": true,
+  "containers": [
+    {
+      "class_name": "Phoenix",
+      "image": "../Dockerfile",
+      "max_instances": 1,
+      "instance_type": "basic"
+    }
+  ],
+  "durable_objects": {
+    "bindings": [{ "name": "PHOENIX", "class_name": "Phoenix" }]
+  },
+  "exports": {
+    "Phoenix": { "type": "durable-object", "storage": "sqlite" }
+  }
+}
